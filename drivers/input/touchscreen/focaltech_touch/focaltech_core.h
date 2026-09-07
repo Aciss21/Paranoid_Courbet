@@ -61,7 +61,9 @@
 #include <linux/sched.h>
 #include <linux/kthread.h>
 #include <linux/dma-mapping.h>
+#ifdef CONFIG_FTS_TRUSTED_TOUCH
 #include <linux/haven/hh_irq_lend.h>
+#endif
 #include "focaltech_common.h"
 
 /*****************************************************************************
