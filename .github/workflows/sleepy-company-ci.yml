@@ -1,0 +1,47 @@
+name: Sleepy Company CI!
+on:
+  workflow_dispatch:
+    inputs:
+      DEPLOY_DEVICE_TYPE:
+        description: 'Deploy Device Type (COURBET/DAVINCI/PHOENIX/SWEET/SWEETK6A)'
+        required: true
+      DEPLOY_TAG_TYPE:
+        description: 'Deploy Kernel version tag (example: v1 or v2)'
+        required: true
+        
+env:
+  CHATID: ${{ secrets.CHAT_ID }}
+  API_BOT: ${{ secrets.BOT_API }}
+  DEVICE_TYPE: ${{ github.event.inputs.DEPLOY_DEVICE_TYPE }}
+  KERNEL_TAG: ${{ github.event.inputs.DEPLOY_TAG_TYPE }}
+
+jobs:
+  VANTOMCI:
+    if: "(! contains(toJSON(github.event.commits.*.message), '[skip-ci]'))"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+    - name: Creating Env!
+      uses: actions/checkout@v5
+
+    - name: Setting up Env!
+      run: |
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install git make bc bison \
+          openssl curl zip kmod cpio flex libelf-dev \
+          libssl-dev libtfm-dev wget device-tree-compiler \
+          ca-certificates python3 binutils \
+          binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi
+
+    - name: Export Vars
+      run: |
+          if [[ ${DEVICE_TYPE} == "${{ github.event.inputs.DEPLOY_DEVICE_TYPE }}" ]]; then echo "DEVICE_TYPE=${{ github.event.inputs.DEPLOY_DEVICE_TYPE }}"  >> $GITHUB_ENV;fi
+          if [[ ${KERNEL_TAG} == "${{ github.event.inputs.DEPLOY_TAG_TYPE }}" ]]; then echo "KERNEL_TAG=${{ github.event.inputs.DEPLOY_TAG_TYPE }}"  >> $GITHUB_ENV;fi
+
+    - name: Building Kernel..
+      run: |
+          curl https://raw.githubusercontent.com/pure-soul-kk/scripts/refs/heads/lineage/kernel.sh > kernel.sh
+          chmod +x kernel.sh
+          bash kernel.sh
+      shell: bash
