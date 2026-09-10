@@ -116,7 +116,7 @@ ifdef CONFIG_SND_EVENT
 	SND_EVENT_OBJS += snd_event.o
 endif
 
-LINUX_INC +=	-I$(srctree)/include/linux
+LINUX_INC +=	-Iinclude/linux
 
 INCS +=		$(COMMON_INC) \
 		$(UAPI_INC)

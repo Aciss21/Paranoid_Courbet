@@ -5,7 +5,7 @@
 #
 
 ccflags-y += \
-	-I$(srctree)/drivers/net/wireless/quantenna/qtnfmac
+	-Idrivers/net/wireless/quantenna/qtnfmac
 
 obj-$(CONFIG_QTNFMAC) += qtnfmac.o
 qtnfmac-objs += \

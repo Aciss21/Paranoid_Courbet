@@ -1,4 +1,4 @@
-ccflags-y := -I$(srctree)/include/linux
+ccflags-y := -Iinclude/linux
 
 msm_kgsl_core-y = \
 	kgsl.o \

@@ -909,7 +909,7 @@ static void blk_add_trace_rq_complete(void *ignore, struct request *rq,
  *
  **/
 static void blk_add_trace_bio(struct request_queue *q, struct bio *bio,
-			      u32 what, int error)
+			      u32 what, int error, union kernfs_node_id *cgid)
 {
 	struct blk_trace *bt;
 
@@ -921,22 +921,23 @@ static void blk_add_trace_bio(struct request_queue *q, struct bio *bio,
 	}
 
 	__blk_add_trace(bt, bio->bi_iter.bi_sector, bio->bi_iter.bi_size,
-			bio_op(bio), bio->bi_opf, what, error, 0, NULL,
-			blk_trace_bio_get_cgid(q, bio));
+			bio_op(bio), bio->bi_opf, what, error, 0, NULL, cgid);
 	rcu_read_unlock();
 }
 
 static void blk_add_trace_bio_bounce(void *ignore,
 				     struct request_queue *q, struct bio *bio)
 {
-	blk_add_trace_bio(q, bio, BLK_TA_BOUNCE, 0);
+	blk_add_trace_bio(q, bio, BLK_TA_BOUNCE, 0,
+			  blk_trace_bio_get_cgid(q, bio));
 }
 
 static void blk_add_trace_bio_complete(void *ignore,
 				       struct request_queue *q, struct bio *bio,
 				       int error)
 {
-	blk_add_trace_bio(q, bio, BLK_TA_COMPLETE, error);
+	blk_add_trace_bio(q, bio, BLK_TA_COMPLETE, error,
+			  blk_trace_bio_get_cgid(q, bio));
 }
 
 static void blk_add_trace_bio_backmerge(void *ignore,
@@ -944,7 +945,8 @@ static void blk_add_trace_bio_backmerge(void *ignore,
 					struct request *rq,
 					struct bio *bio)
 {
-	blk_add_trace_bio(q, bio, BLK_TA_BACKMERGE, 0);
+	blk_add_trace_bio(q, bio, BLK_TA_BACKMERGE, 0,
+			 blk_trace_bio_get_cgid(q, bio));
 }
 
 static void blk_add_trace_bio_frontmerge(void *ignore,
@@ -952,13 +954,15 @@ static void blk_add_trace_bio_frontmerge(void *ignore,
 					 struct request *rq,
 					 struct bio *bio)
 {
-	blk_add_trace_bio(q, bio, BLK_TA_FRONTMERGE, 0);
+	blk_add_trace_bio(q, bio, BLK_TA_FRONTMERGE, 0,
+			  blk_trace_bio_get_cgid(q, bio));
 }
 
 static void blk_add_trace_bio_queue(void *ignore,
 				    struct request_queue *q, struct bio *bio)
 {
-	blk_add_trace_bio(q, bio, BLK_TA_QUEUE, 0);
+	blk_add_trace_bio(q, bio, BLK_TA_QUEUE, 0,
+			  blk_trace_bio_get_cgid(q, bio));
 }
 
 static void blk_add_trace_getrq(void *ignore,
@@ -966,7 +970,8 @@ static void blk_add_trace_getrq(void *ignore,
 				struct bio *bio, int rw)
 {
 	if (bio)
-		blk_add_trace_bio(q, bio, BLK_TA_GETRQ, 0);
+		blk_add_trace_bio(q, bio, BLK_TA_GETRQ, 0,
+				  blk_trace_bio_get_cgid(q, bio));
 	else {
 		struct blk_trace *bt;
 
@@ -985,7 +990,8 @@ static void blk_add_trace_sleeprq(void *ignore,
 				  struct bio *bio, int rw)
 {
 	if (bio)
-		blk_add_trace_bio(q, bio, BLK_TA_SLEEPRQ, 0);
+		blk_add_trace_bio(q, bio, BLK_TA_SLEEPRQ, 0,
+				  blk_trace_bio_get_cgid(q, bio));
 	else {
 		struct blk_trace *bt;
 

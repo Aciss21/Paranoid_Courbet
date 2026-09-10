@@ -1,4 +1,4 @@
-ccflags-y := -I$(srctree)/include/drm
+ccflags-y := -Iinclude/drm
 
 obj-y := \
 	msm_drv_hyp.o

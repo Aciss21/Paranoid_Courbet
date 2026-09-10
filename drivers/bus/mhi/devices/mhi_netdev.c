@@ -547,19 +547,18 @@ static int mhi_netdev_change_mtu(struct net_device *dev, int new_mtu)
 	return 0;
 }
 
-static netdev_tx_t mhi_netdev_xmit(struct sk_buff *skb, struct net_device *dev)
+static int mhi_netdev_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct mhi_netdev_priv *mhi_netdev_priv = netdev_priv(dev);
 	struct mhi_netdev *mhi_netdev = mhi_netdev_priv->mhi_netdev;
 	struct mhi_device *mhi_dev = mhi_netdev->mhi_dev;
-	netdev_tx_t res = NETDEV_TX_OK;
-	int ret;
+	int res = 0;
 
 	MSG_VERB("Entered\n");
 
-	ret = mhi_queue_transfer(mhi_dev, DMA_TO_DEVICE, skb, skb->len,
+	res = mhi_queue_transfer(mhi_dev, DMA_TO_DEVICE, skb, skb->len,
 				 MHI_EOT);
-	if (ret) {
+	if (res) {
 		MSG_VERB("Failed to queue with reason:%d\n", res);
 		netif_stop_queue(dev);
 		res = NETDEV_TX_BUSY;
