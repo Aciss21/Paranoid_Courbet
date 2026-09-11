@@ -27,7 +27,7 @@ fi
 
 # ── Build Config ─────────────────────────────────────────────────
 DEVICE="courbet"
-KNAME="Evagelion"
+KNAME="一マShuSi"
 VAR="01"
 
 ZIPNAME="${KNAME}-${VAR}.zip"
@@ -277,7 +277,7 @@ pwd
 
 echo
 echo "Defconfig:"
-echo "arch/arm64/configs/vendor/acis_defconfig"
+echo "arch/arm64/configs/vendor/courbet_defconfig"
 echo
 
 tg_update "Kernel Build
@@ -287,14 +287,14 @@ Kernel : $KNAME
 
 [2/4] Defconfig
 
-Config  : vendor/acis_defconfig
+Config  : vendor/courbet_defconfig
 Status  : Loading"
 
 make O="$OUT" \
     ARCH=arm64 \
     LLVM=1 \
     CROSS_COMPILE=aarch64-linux-gnu- \
-    vendor/acis_defconfig
+    vendor/courbet_defconfig
 
 DEFCONFIG_STATUS=$?
 
